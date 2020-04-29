@@ -1,6 +1,13 @@
 import pandas as pd
 import datetime
+import argparse
 from openpyxl import load_workbook
+
+parser = argparse.ArgumentParser(description='Gera xls de peças')
+parser.add_argument('data', type=str, help='a data da planilha a ser usada')
+args = parser.parse_args()
+
+
 
 print("Iniciando o programa")
 data_atual = datetime.date.today()
@@ -9,7 +16,7 @@ if data_atual.month == 2 and data_atual.day == 29:
 data_limite = data_atual.replace(year=2018)
 print("Data de vencimento das Tales: {}".format(data_limite))
 
-data_planilha = "20_04_07"
+data_planilha = args.data
 print("Data da planilha: {}".format(data_planilha))
 base_instalada_path = "{}/Base Instalada.xlsx".format(data_planilha)
 consumiveis_path = "{}/Consumíveis MR.xlsx".format(data_planilha)
