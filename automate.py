@@ -32,5 +32,9 @@ print("Das Tales novas {} foram consumidas".format(consumiveis_tales_novas_desti
 base_tales_vencida = base_instalada_tales[~base_instalada_tales['Nº de série'].isin(consumiveis_tales_novas_destination['Nº série'])]
 print("Número de Tales Vencidas: {}".format(base_tales_vencida.shape[0]))
 
-numero_por_estado = base_tales_vencida.groupby(['Rg', 'Nome de lista'])['TALES'].count()
+numero_por_estado = base_tales_vencida.groupby(['Rg'])['TALES'].count()
+numero_por_estado['Total'] = base_tales_vencida.shape[0]
+
 print(numero_por_estado)
+
+
