@@ -1,5 +1,6 @@
 import pandas as pd
 import datetime
+from openpyxl import load_workbook
 
 print("Iniciando o programa")
 data_atual = datetime.date.today()
@@ -34,7 +35,16 @@ print("Número de Tales Vencidas: {}".format(base_tales_vencida.shape[0]))
 
 numero_por_estado = base_tales_vencida.groupby(['Rg'])['TALES'].count()
 numero_por_estado['Total'] = base_tales_vencida.shape[0]
+numero_por_estado_data = numero_por_estado.rename(data_planilha)
+#teste.to_excel('{}/resultados.xlsx'.format(data_planilha))
 
-print(numero_por_estado)
+planilha = load_workbook('{}/resultados.xlsx'.format(data_planilha))
+writer = pd.ExcelWriter('{}/resultados.xlsx'.format(data_planilha), engine='openpyxl')
+writer.book = planilha
+writer.sheets = {ws.title: ws for ws in planilha.worksheets}
 
+for sheetname in writer.sheets:
+    numero_por_estado_data.to_excel(writer, sheet_name=sheetname, startcol=writer.sheets[sheetname].max_column, index=False)
+
+writer.save()
 
