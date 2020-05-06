@@ -8,7 +8,6 @@ parser.add_argument('data', type=str, help='a data da planilha a ser usada')
 args = parser.parse_args()
 
 
-
 print("Iniciando o programa")
 data_atual = datetime.date.today()
 if data_atual.month == 2 and data_atual.day == 29:
@@ -49,10 +48,8 @@ numero_por_estado_data = numero_por_estado.rename(data_planilha)
 #teste.to_excel('{}/resultados.xlsx'.format(data_planilha))
 
 
-arquivo = load_workbook('resultados1.xlsx')
+arquivo = load_workbook('resultados.xlsx')
 planilha = arquivo.active
-print(numero_por_estado_data)
-print(type(numero_por_estado_data))
 nova_col = planilha.max_column + 1
 for cel in planilha.iter_rows(max_col=1):
     # o retorno eh um tuple, com o primeiro valor sendo a celula
@@ -61,16 +58,11 @@ for cel in planilha.iter_rows(max_col=1):
         print("==1")
         planilha.cell(row=cel.row, column=nova_col).value = numero_por_estado_data.name
     else:
-        planilha.cell(row=cel.row, column=nova_col).value = 'oi'
-    #numero_por_estado_data.loc(cel.value)
-arquivo.save('resultados1.xlsx')
 
-
-
-"""
-for ws in planilha.worksheets:
-    for index, row in enumerate(ws.rows, start=1):
-        ws.cell(row=index, column=2).value='oi'
-# tem que ter um save aqui
-
-"""
+        # achar numero_por_estado com o nome da linha
+        cabecalho = planilha['A{}'.format(cel.row)].value
+        try:
+            planilha.cell(row=cel.row, column=nova_col).value = numero_por_estado_data[cabecalho]
+        except KeyError:
+            planilha.cell(row=cel.row, column=nova_col).value = 0
+arquivo.save('resultados.xlsx')
