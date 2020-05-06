@@ -51,12 +51,19 @@ numero_por_estado_data = numero_por_estado.rename(data_planilha)
 
 arquivo = load_workbook('resultados1.xlsx')
 planilha = arquivo.active
-print(planilha)
+print(numero_por_estado_data)
+print(type(numero_por_estado_data))
+nova_col = planilha.max_column + 1
 for cel in planilha.iter_rows(max_col=1):
     # o retorno eh um tuple, com o primeiro valor sendo a celula
     cel = cel[0]
-    print(cel.value)
-
+    if cel.row == 1:
+        print("==1")
+        planilha.cell(row=cel.row, column=nova_col).value = numero_por_estado_data.name
+    else:
+        planilha.cell(row=cel.row, column=nova_col).value = 'oi'
+    #numero_por_estado_data.loc(cel.value)
+arquivo.save('resultados1.xlsx')
 
 
 
