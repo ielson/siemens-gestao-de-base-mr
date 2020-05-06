@@ -19,9 +19,9 @@ print("Data de vencimento das Tales: {}".format(data_limite))
 data_planilha = args.data
 print("Data da planilha: {}".format(data_planilha))
 base_instalada_path = "{}/Base Instalada.xlsx".format(data_planilha)
-consumiveis_path = "{}/Consumíveis MR.xlsx".format(data_planilha)
+consumiveis_path = "{}/Consumíveis.xlsx".format(data_planilha)
 
-base_instalada = pd.read_excel(base_instalada_path, sheet_name='Planilha3')
+base_instalada = pd.read_excel(base_instalada_path, sheet_name='IB MR NOR CDG')
 print("Tamanho da base instalada: {}".format(base_instalada.shape[0]))
 consumiveis = pd.read_excel(consumiveis_path, sheet_name='Planilha1')
 
@@ -41,17 +41,29 @@ base_tales_vencida = base_instalada_tales[~base_instalada_tales['Nº de série']
 print("Número de Tales Vencidas: {}".format(base_tales_vencida.shape[0]))
 
 numero_por_estado = base_tales_vencida.groupby(['Rg'])['TALES'].count()
-numero_por_estado['Total'] = base_tales_vencida.shape[0]
+numero_por_estado['Total Vencida'] = base_tales_vencida.shape[0]
+numero_por_estado['Base Tales'] = base_instalada_tales.shape[0]
+numero_por_estado['Base Total'] = base_instalada.shape[0]
+
 numero_por_estado_data = numero_por_estado.rename(data_planilha)
 #teste.to_excel('{}/resultados.xlsx'.format(data_planilha))
 
-planilha = load_workbook('{}/resultados.xlsx'.format(data_planilha))
-writer = pd.ExcelWriter('{}/resultados.xlsx'.format(data_planilha), engine='openpyxl')
-writer.book = planilha
-writer.sheets = {ws.title: ws for ws in planilha.worksheets}
 
-for sheetname in writer.sheets:
-    numero_por_estado_data.to_excel(writer, sheet_name=sheetname, startcol=writer.sheets[sheetname].max_column, index=False)
+arquivo = load_workbook('resultados1.xlsx')
+planilha = arquivo.active
+print(planilha)
+for cel in planilha.iter_rows(max_col=1):
+    # o retorno eh um tuple, com o primeiro valor sendo a celula
+    cel = cel[0]
+    print(cel.value)
 
-writer.save()
 
+
+
+"""
+for ws in planilha.worksheets:
+    for index, row in enumerate(ws.rows, start=1):
+        ws.cell(row=index, column=2).value='oi'
+# tem que ter um save aqui
+
+"""
